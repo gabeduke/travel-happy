@@ -1,0 +1,11 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+metadata:
+  name: travel-calculator
+build:
+  artifacts:
+  - image: dukeman/travel-calculator
+deploy:
+  kubectl:
+    manifests:
+      - deploy/deployment.yaml

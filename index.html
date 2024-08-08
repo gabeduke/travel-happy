@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Equation Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            input[type="number"], button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Travel Equation Calculator</h1>
+        <label for="kids">Number of Kids:</label>
+        <input type="number" id="kids" name="kids" min="1" max="10">
+
+        <label for="travel">Hours Traveling:</label>
+        <input type="number" id="travel" name="travel" min="0" max="24">
+
+        <label for="food">Amount of Food (1-10):</label>
+        <input type="number" id="food" name="food" min="1" max="10">
+
+        <label for="sleep">Amount of Sleep (hours, 0-24):</label>
+        <input type="number" id="sleep" name="sleep" min="0" max="24">
+
+        <label for="house">State of the House (1-10):</label>
+        <input type="number" id="house" name="house" min="1" max="10">
+
+        <label for="coffee">Amount of Coffee (cups, 0-10):</label>
+        <input type="number" id="coffee" name="coffee" min="0" max="10">
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                kids: params.get('kids'),
+                travel: params.get('travel'),
+                food: params.get('food'),
+                sleep: params.get('sleep'),
+                house: params.get('house'),
+                coffee: params.get('coffee'),
+            };
+        }
+
+        function setFormValues(params) {
+            if (params.kids) document.getElementById('kids').value = params.kids;
+            if (params.travel) document.getElementById('travel').value = params.travel;
+            if (params.food) document.getElementById('food').value = params.food;
+            if (params.sleep) document.getElementById('sleep').value = params.sleep;
+            if (params.house) document.getElementById('house').value = params.house;
+            if (params.coffee) document.getElementById('coffee').value = params.coffee;
+        }
+
+        function calculate() {
+            const K = parseFloat(document.getElementById('kids').value);
+            const T = parseFloat(document.getElementById('travel').value);
+            const F = parseFloat(document.getElementById('food').value);
+            const S = parseFloat(document.getElementById('sleep').value);
+            const H = parseFloat(document.getElementById('house').value);
+            const C = parseFloat(document.getElementById('coffee').value);
+
+            if (isNaN(K) || isNaN(T) || isNaN(F) || isNaN(S) || isNaN(H) || isNaN(C)) {
+                document.getElementById('result').innerHTML = 'Please fill in all fields with valid numbers.';
+                return;
+            }
+
+            const M = K * (T / (S + 1)) - (F / (K + 1));
+            const happiness = H + C - M;
+
+            document.getElementById('result').innerHTML = `
+                <p>Number of Meltdowns: ${M.toFixed(2)}</p>
+                <p>Overall Happiness: ${happiness.toFixed(2)}</p>
+                <h3>Calculation Steps:</h3>
+                <p>Meltdowns (M) = K * (T / (S + 1)) - (F / (K + 1))</p>
+                <p>Meltdowns (M) = ${K} * (${T} / (${S} + 1)) - (${F} / (${K} + 1))</p>
+                <p>Meltdowns (M) ≈ ${M.toFixed(2)}</p>
+                <p>Overall Happiness = H + C - M</p>
+                <p>Overall Happiness = ${H} + ${C} - ${M.toFixed(2)}</p>
+                <p>Overall Happiness ≈ ${happiness.toFixed(2)}</p>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = getQueryParams();
+            setFormValues(params);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travel-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: travel-calculator
+  template:
+    metadata:
+      labels:
+        app: travel-calculator
+    spec:
+      containers:
+      - name: nginx
+        image: dukeman/travel-calculator:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: travel-calculator-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: travel-calculator
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: travel-calculator-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - travel-happy.leetserve.com
+    secretName: travel-calculator-tls
+  rules:
+  - host: travel-happy.leetserve.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: travel-calculator-service
+            port:
+              number: 80
